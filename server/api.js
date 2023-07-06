@@ -1,11 +1,12 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 
 app.use(cors());
-app.use(express.static('../public')); //静的ファイル（HTML、CSS、JS）を提供する
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('/api/subsidies', async (req, res) => {
     try {
