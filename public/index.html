@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>APIデータ取得</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>APIデータ取得テスト</h1>
+    <button id="getDataButton">データを取得</button>
+    <div id="result"></div>
+
+    <script>
+        $(document).ready(function() {
+            $("#getDataButton").click(function() {
+                $.ajax({
+                    url: '/api/subsidies',
+                    type: 'GET',
+                    success: function(data) {
+                        $("#result").html(JSON.stringify(data, null, 2));
+                    },
+                    error: function(error) {
+                        console.error("An error occurred:", error);
+                        alert("データ取得に失敗しました。");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
