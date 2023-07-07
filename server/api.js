@@ -2,15 +2,18 @@ const express = require('express');
 const path = require('path');
 const axios = require('axios');
 const cors = require('cors');
+const bodyParser = require('body-parser'); //追加
 
 const app = express();
 
 app.use(cors());
+app.use(bodyParser.json()); // 追加
 app.use('/', express.static(path.join(__dirname, '../public')));
 
-app.get('/api/subsidies', async (req, res) => {
+app.post('/api/subsidies', async (req, res) => { // getからpostに変更
     try {
-        const response = await axios.get('https://api.jgrants-portal.go.jp/exp/v1/public/subsidies');
+        const keyword = encodeURIComponent(req.body.keyword);
+        const response = await axios.get(`https://api.jgrants-portal.go.jp/exp/v1/public/subsidies?keyword=${keyword}&sort=created_date&order=DESC&acceptance=1`);
         res.send(response.data);
     } catch (error) {
         console.error("An error occurred:", error);

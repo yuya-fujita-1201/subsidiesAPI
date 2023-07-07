@@ -6,17 +6,46 @@
 </head>
 <body>
     <h1>APIデータ取得テスト</h1>
+    <input type="text" id="keyword" placeholder="キーワードを入力">
     <button id="getDataButton">データを取得</button>
-    <div id="result"></div>
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th>補助金名</th>
+                <th>開始日</th>
+                <th>終了日</th>
+                <th>最大補助金額</th>
+                <th>対象エリア</th>
+                <th>従業員数</th>
+            </tr>
+        </thead>
+        <tbody id="resultBody">
+        </tbody>
+    </table>
 
     <script>
         $(document).ready(function() {
             $("#getDataButton").click(function() {
+                const keyword = $("#keyword").val();
                 $.ajax({
                     url: '/api/subsidies',
-                    type: 'GET',
+                    type: 'POST',
+                    data: JSON.stringify({ keyword: keyword }),
+                    contentType: 'application/json',
                     success: function(data) {
-                        $("#result").html(JSON.stringify(data, null, 2));
+                        $("#resultBody").empty();
+                        data.result.forEach(function(item) {
+                            $("#resultBody").append(
+                                `<tr>
+                                    <td>${item.title}</td>
+                                    <td>${new Date(item.acceptance_start_datetime).toLocaleDateString()}</td>
+                                    <td>${new Date(item.acceptance_end_datetime).toLocaleDateString()}</td>
+                                    <td>${item.subsidy_max_limit.toLocaleString()}</td>
+                                    <td>${item.target_area_search}</td>
+                                    <td>${item.target_number_of_employees}</td>
+                                </tr>`
+                            );
+                        });
                     },
                     error: function(error) {
                         console.error("An error occurred:", error);
